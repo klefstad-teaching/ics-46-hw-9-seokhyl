@@ -1,12 +1,6 @@
 
 #include "dijkstras.h"
 
-struct CmpNodes {
-    bool operator()(const Node& a, const Node& b) {
-        return a.weight < b.weight;
-    }
-};
-
 // returns a list of minimum cost from the source to the vertex.
 // previous stores the previous vertex at the entry of a vertex.
 vector<int> dijkstra_shortest_path(const Graph& G, int source, vector<int>& previous) {
@@ -15,18 +9,11 @@ vector<int> dijkstra_shortest_path(const Graph& G, int source, vector<int>& prev
     previous = vector<int>(n, -1);
     vector<bool> visited(n, false);
 
-    Vertex cur = source;
-    distance[cur] = 0;
-
-    priority_queue<Node, vector<Node>, CmpNodes> pq;
-    pq.push(Node{cur, 0});
-    // for (Edge e : G[cur]) {
-    //     pq.push(e);
-    //     distance[e.dst] = e.weight;
-    //     previous[e.dst] = cur;
-    // }
-    // visited[cur] = true;
-
+    auto cmp = [&distance](const Node& a, const Node& b){return distance[a.v] > distance[b.v];};
+    priority_queue<Node, vector<Node>, decltype(cmp)> pq(cmp);
+    pq.push(Node{source, 0});
+    distance[source] = 0;
+    
     while(!pq.empty()) {
         Node curNode = pq.top(); pq.pop();
         Vertex curVertex = curNode.v;
