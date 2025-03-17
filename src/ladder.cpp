@@ -13,9 +13,11 @@ void error(string word1, string word2, string msg) {
 }
 
 int calculate_edit_distance(const std::string& str1, const std::string& str2) {
-    int m = str1.size();
-    int n = str2.size();
-    int d[m+1][n+1] = {0};
+// https://en.wikipedia.org/wiki/Wagner%E2%80%93Fischer_algorithm
+    const int m = str1.size();
+    const int n = str2.size();
+    int d[50][50] = {0};
+    // int** d = new int[m+1][n+1];
     
     for (int i = 1; i <= m; ++i) {
         d[i][0] = i;
