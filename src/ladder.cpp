@@ -12,40 +12,76 @@ void error(string word1, string word2, string msg) {
     cerr << "Error " << "(" << word1 << ", " << word2 << "): " << msg << endl;
 }
 
+int calculate_edit_distance(const std::string& str1, const std::string& str2) {
+    int m = str1.size();
+    int n = str2.size();
+    int d[m+1][n+1] = {0};
+    
+    for (int i = 1; i <= m; ++i) {
+        d[i][0] = i;
+    }
+    for (int j = 1; j <=n; ++j) {
+        d[0][j] = j;
+    }
+    int substitutionCost = 0;
+    for(int j=1; j<=n; ++j){
+        for(int i=1; i<=m; ++i){
+            substitutionCost = str1[i-1] == str2[j-1] ? 0 : 1;
+            
+            d[i][j] = min(min(d[i-1][j]+1, d[i][j-1]+1), d[i-1][j-1]+substitutionCost);
+        }
+    }
+    // for (int i=0; i<=m; ++i){
+    //     for(int j=0; j<=n; ++j) {
+    //         cout << d[i][j] << ' ';
+    //     }
+    //     cout << endl;
+    // }
+    return d[m][n];
+}
 
 bool edit_distance_within(const std::string& str1, const std::string& str2, int d) {
-
+    return calculate_edit_distance(str1, str2) <= d;
 }
 
 bool is_adjacent(const string& word1, const string& word2) {
-    if (abs((int)(word1.size()) - int(word2.size())) > 1) return false;
-    if (word1.size() == word2.size()) {
-        int wordLen = word1.size();
-        int diffCount = 0;
-        for (int i = 0; i < wordLen; ++i) 
-            if (word1[i] != word2[i]) ++diffCount;
-        // cout << word1 << ' ' << word2 << ' ' << diffCount << endl;
-        return diffCount == 1;
-    } else {
-        string word1Cpy = word1;
-        string word2Cpy = word2;
-        if (word1Cpy.size() < word2Cpy.size())
-            swap(word1Cpy, word2Cpy); // ensure word1 is longer
-        int wordLen = word1Cpy.size();
-        int i = 0, j = 0, diffCount = 0;
-        while(i < wordLen) {
-            if (word1Cpy[i] != word2Cpy[j]) {
-                ++diffCount;
-                ++i;
-                if (diffCount != 1) return false;
-                continue;
-            }
-            ++i;
-            ++j;
-        }
-        return true;
-    }
-    return false;
+    return edit_distance_within(word1, word2, 1);
+
+
+
+
+
+
+
+
+    // if (abs((int)(word1.size()) - int(word2.size())) > 1) return false;
+    // if (word1.size() == word2.size()) {
+    //     int wordLen = word1.size();
+    //     int diffCount = 0;
+    //     for (int i = 0; i < wordLen; ++i) 
+    //         if (word1[i] != word2[i]) ++diffCount;
+    //     // cout << word1 << ' ' << word2 << ' ' << diffCount << endl;
+    //     return diffCount == 1;
+    // } else {
+    //     string word1Cpy = word1;
+    //     string word2Cpy = word2;
+    //     if (word1Cpy.size() < word2Cpy.size())
+    //         swap(word1Cpy, word2Cpy); // ensure word1 is longer
+    //     int wordLen = word1Cpy.size();
+    //     int i = 0, j = 0, diffCount = 0;
+    //     while(i < wordLen) {
+    //         if (word1Cpy[i] != word2Cpy[j]) {
+    //             ++diffCount;
+    //             ++i;
+    //             if (diffCount != 1) return false;
+    //             continue;
+    //         }
+    //         ++i;
+    //         ++j;
+    //     }
+    //     return true;
+    // }
+    // return false;
 }
 
 template <typename T>
