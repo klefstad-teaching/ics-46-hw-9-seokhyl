@@ -10,6 +10,10 @@ using namespace std;
 constexpr int INF = numeric_limits<int>::max();
 
 using Vertex = int;
+struct Node {
+    Vertex v;
+    int weight;
+};
 
 struct Edge {
     int src=0;

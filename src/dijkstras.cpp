@@ -1,8 +1,8 @@
 
 #include "dijkstras.h"
 
-struct CmpEdges {
-    bool operator()(const Edge& a, const Edge& b) {
+struct CmpNodes {
+    bool operator()(const Node& a, const Node& b) {
         return a.weight < b.weight;
     }
 };
@@ -18,24 +18,26 @@ vector<int> dijkstra_shortest_path(const Graph& G, int source, vector<int>& prev
     Vertex cur = source;
     distance[cur] = 0;
 
-    priority_queue<Edge, vector<Edge>, CmpEdges> pq;
-    for (Edge e : G[cur]) {
-        pq.push(e);
-        distance[e.dst] = e.weight;
-        previous[e.dst] = cur;
-    }
-    visited[cur] = true;
+    priority_queue<Node, vector<Node>, CmpNodes> pq;
+    pq.push(Node{cur, 0});
+    // for (Edge e : G[cur]) {
+    //     pq.push(e);
+    //     distance[e.dst] = e.weight;
+    //     previous[e.dst] = cur;
+    // }
+    // visited[cur] = true;
 
     while(!pq.empty()) {
-        Vertex cur = pq.top().dst; pq.pop();
-        if (visited[cur]) continue;
+        Node curNode = pq.top(); pq.pop();
+        Vertex curVertex = curNode.v;
+        if (visited[curVertex]) continue;
+        visited[curVertex] = true;
 
-        visited[cur] = true;
-        for (Edge e : G[cur]) {
-            if (!visited[e.dst] && distance[cur] + e.weight < distance[e.dst]) {
-                distance[e.dst] = distance[cur] + e.weight;
-                previous[e.dst] = cur;
-                pq.push(e);
+        for (Edge e : G[curVertex]) {
+            if (!visited[e.dst] && distance[curVertex] + e.weight < distance[e.dst]) {
+                distance[e.dst] = distance[curVertex] + e.weight;
+                previous[e.dst] = curVertex;
+                pq.push(Node{e.dst, distance[e.dst]});
             }
         }
     }
